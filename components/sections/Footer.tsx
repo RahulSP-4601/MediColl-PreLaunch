@@ -1,17 +1,41 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin } from "lucide-react";
-import Link from "next/link";
+import { Mail, Phone, MapPin, Twitter, Linkedin, Instagram } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
+  const links = {
+    product: [
+      { name: "Features", href: "/features" },
+      { name: "Pricing", href: "/pricing" },
+      { name: "How it Works", href: "/how-it-works" },
+    ],
+    company: [
+      { name: "About Us", href: "/about" },
+      { name: "Blog", href: "/blog" },
+      { name: "Contact", href: "/contact" },
+    ],
+    legal: [
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
+      { name: "Cookie Policy", href: "/cookies" },
+    ],
+  };
+
+  const socialLinks = [
+    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Linkedin, href: "#", label: "LinkedIn" },
+    { icon: Instagram, href: "#", label: "Instagram" },
+  ];
+
   return (
     <footer className="bg-beige border-t border-darkgrey/10">
       <div className="container mx-auto px-6 py-16">
-        <div className="mb-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-12 mb-12">
           {/* Brand Column */}
-          <div>
+          <div className="lg:col-span-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -28,7 +52,8 @@ export default function Footer() {
                 />
               </Link>
               <p className="text-darkgrey/70 mb-6 max-w-sm">
-                AI-powered receptionist for hospitals that answers patient calls instantly, schedules appointments 24/7, and reduces no-shows by 40%.
+                The AI voice agent that never misses a call. Transform your customer
+                service and grow your business with intelligent automation.
               </p>
 
               <div className="space-y-3">
@@ -51,6 +76,72 @@ export default function Footer() {
               </div>
             </motion.div>
           </div>
+
+          {/* Product Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <h4 className="text-lg font-semibold text-darkgrey mb-4">Product</h4>
+            <ul className="space-y-3">
+              {links.product.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-darkgrey/70 hover:text-darkgrey transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Company Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h4 className="text-lg font-semibold text-darkgrey mb-4">Company</h4>
+            <ul className="space-y-3">
+              {links.company.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-darkgrey/70 hover:text-darkgrey transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Legal Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <h4 className="text-lg font-semibold text-darkgrey mb-4">Legal</h4>
+            <ul className="space-y-3">
+              {links.legal.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-darkgrey/70 hover:text-darkgrey transition-colors"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
         </div>
 
         {/* Bottom Section */}
@@ -64,6 +155,21 @@ export default function Footer() {
           <p className="text-darkgrey/60 text-sm">
             © 2025 MediColl24. All rights reserved.
           </p>
+
+          <div className="flex items-center gap-4">
+            {socialLinks.map((social) => (
+              <motion.a
+                key={social.label}
+                href={social.href}
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 bg-darkgrey/10 rounded-full flex items-center justify-center hover:bg-darkgrey hover:text-beige transition-all duration-300"
+                aria-label={social.label}
+              >
+                <social.icon className="w-5 h-5" />
+              </motion.a>
+            ))}
+          </div>
         </motion.div>
       </div>
     </footer>
