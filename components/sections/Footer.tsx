@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Phone, MapPin, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -23,12 +23,6 @@ export default function Footer() {
       { name: "Cookie Policy", href: "/cookies" },
     ],
   };
-
-  const socialLinks = [
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-  ];
 
   return (
     <footer className="bg-beige border-t border-darkgrey/10">
@@ -150,26 +144,11 @@ export default function Footer() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="pt-8 border-t border-darkgrey/10 flex flex-col md:flex-row justify-between items-center gap-4"
+          className="pt-8 border-t border-darkgrey/10"
         >
-          <p className="text-darkgrey/60 text-sm">
+          <p className="text-darkgrey/60 text-sm text-center md:text-left">
             © 2025 MediColl24. All rights reserved.
           </p>
-
-          <div className="flex items-center gap-4">
-            {socialLinks.map((social) => (
-              <motion.a
-                key={social.label}
-                href={social.href}
-                whileHover={{ scale: 1.1, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-10 h-10 bg-darkgrey/10 rounded-full flex items-center justify-center hover:bg-darkgrey hover:text-beige transition-all duration-300"
-                aria-label={social.label}
-              >
-                <social.icon className="w-5 h-5" />
-              </motion.a>
-            ))}
-          </div>
         </motion.div>
       </div>
     </footer>
