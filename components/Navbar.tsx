@@ -21,23 +21,23 @@ export default function Navbar({ onJoinWaitlist }: NavbarProps) {
         <div className="flex items-center justify-between">
           {/* Logo Section */}
           <Link href="/" className="hover:opacity-80 transition-opacity">
-            <div className="h-20 md:h-24 relative w-auto flex items-center">
+            <div className="h-8 md:h-9 relative w-auto flex items-center">
               <Image
                 src="/logo.png"
                 alt="MediColl24"
-                width={320}
-                height={98}
-                className="h-18 md:h-22 w-auto"
+                width={100}
+                height={31}
+                className="h-full w-auto object-contain"
               />
             </div>
           </Link>
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center gap-8">
-            <Link href="#features" className="text-darkgrey/70 hover:text-darkgrey font-medium transition-colors">
+            <Link href="#features" className="text-darkgrey/80 hover:text-darkgrey font-semibold text-lg transition-colors">
               Features
             </Link>
-            <Link href="#how-it-works" className="text-darkgrey/70 hover:text-darkgrey font-medium transition-colors">
+            <Link href="#how-it-works" className="text-darkgrey/80 hover:text-darkgrey font-semibold text-lg transition-colors">
               How It Works
             </Link>
           </div>
@@ -47,9 +47,9 @@ export default function Navbar({ onJoinWaitlist }: NavbarProps) {
             onClick={onJoinWaitlist}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-6 py-3 bg-darkgrey text-beige rounded-full font-semibold text-sm shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+            className="px-6 md:px-8 py-2.5 md:py-3 bg-darkgrey text-beige rounded-full font-bold text-base md:text-lg shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
           >
-            <Phone className="w-4 h-4" />
+            <Phone className="w-5 h-5" />
             Join Waitlist
           </motion.button>
         </div>
