@@ -101,7 +101,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       setFormData({ ...formData, name: e.target.value })
                     }
                     className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
-                    placeholder="Dr. Rahul Sharma"
+                    placeholder="Dr. Your Name"
                   />
                 </div>
 
@@ -117,7 +117,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       setFormData({ ...formData, email: e.target.value })
                     }
                     className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
-                    placeholder="you@clinic.com"
+                    placeholder="your@email.com"
                   />
                 </div>
 
@@ -148,7 +148,7 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                       setFormData({ ...formData, clinicName: e.target.value })
                     }
                     className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
-                    placeholder="Sharma Clinic"
+                    placeholder="Your Clinic/Hospital Name"
                   />
                 </div>
 

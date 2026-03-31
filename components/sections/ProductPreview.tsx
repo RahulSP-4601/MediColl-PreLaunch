@@ -65,7 +65,7 @@ export default function ProductPreview() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-darkgrey mb-6">
-            Your clinic dashboard, simplified
+            Your clinic/hospital dashboard, simplified
           </h2>
           <p className="text-xl text-darkgrey/60 max-w-2xl mx-auto">
             See real-time appointments, stats, and call logs in one place
