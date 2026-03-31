@@ -1,20 +1,30 @@
+"use client";
+
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import HowItWorks from "@/components/sections/HowItWorks";
 import Footer from "@/components/sections/Footer";
-
-export const metadata = {
-  title: "How It Works - MediColl24 | AI Voice Agent",
-  description: "Learn how MediColl24 AI voice agent works - from setup to automated bookings in minutes.",
-};
+import { WaitlistModal } from "@/components/WaitlistModal";
 
 export default function HowItWorksPage() {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
+  const handleJoinWaitlist = () => {
+    setIsWaitlistOpen(true);
+  };
+
   return (
     <main className="min-h-screen">
-      <Navbar />
+      <Navbar onJoinWaitlist={handleJoinWaitlist} />
       <div className="pt-24">
         <HowItWorks />
       </div>
       <Footer />
+
+      <WaitlistModal
+        isOpen={isWaitlistOpen}
+        onClose={() => setIsWaitlistOpen(false)}
+      />
     </main>
   );
 }

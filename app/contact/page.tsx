@@ -1,12 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
+import { WaitlistModal } from "@/components/WaitlistModal";
 import { motion } from "framer-motion";
 import { Mail, Phone, MapPin, Send } from "lucide-react";
-import { useState } from "react";
 
 export default function ContactPage() {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
+  const handleJoinWaitlist = () => {
+    setIsWaitlistOpen(true);
+  };
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -52,7 +59,7 @@ export default function ContactPage() {
 
   return (
     <main className="min-h-screen">
-      <Navbar />
+      <Navbar onJoinWaitlist={handleJoinWaitlist} />
 
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-beige via-beige to-sage/20">
@@ -213,6 +220,11 @@ export default function ContactPage() {
       </section>
 
       <Footer />
+
+      <WaitlistModal
+        isOpen={isWaitlistOpen}
+        onClose={() => setIsWaitlistOpen(false)}
+      />
     </main>
   );
 }

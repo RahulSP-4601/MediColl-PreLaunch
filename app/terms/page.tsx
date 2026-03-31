@@ -1,10 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
+import { WaitlistModal } from "@/components/WaitlistModal";
 import { motion } from "framer-motion";
 
 export default function TermsPage() {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
+  const handleJoinWaitlist = () => {
+    setIsWaitlistOpen(true);
+  };
   const sections = [
     {
       title: "1. Acceptance of Terms",
@@ -120,7 +127,7 @@ Address: Mumbai, India`,
 
   return (
     <main className="min-h-screen">
-      <Navbar />
+      <Navbar onJoinWaitlist={handleJoinWaitlist} />
 
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-beige via-beige to-sage/20">
@@ -194,6 +201,11 @@ Address: Mumbai, India`,
       </section>
 
       <Footer />
+
+      <WaitlistModal
+        isOpen={isWaitlistOpen}
+        onClose={() => setIsWaitlistOpen(false)}
+      />
     </main>
   );
 }

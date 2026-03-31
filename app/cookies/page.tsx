@@ -1,10 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
+import { WaitlistModal } from "@/components/WaitlistModal";
 import { motion } from "framer-motion";
 
 export default function CookiesPage() {
+  const [isWaitlistOpen, setIsWaitlistOpen] = useState(false);
+
+  const handleJoinWaitlist = () => {
+    setIsWaitlistOpen(true);
+  };
   const cookieTypes = [
     {
       title: "Essential Cookies",
@@ -105,7 +112,7 @@ Most of our persistent cookies expire within 1 year.`,
 
   return (
     <main className="min-h-screen">
-      <Navbar />
+      <Navbar onJoinWaitlist={handleJoinWaitlist} />
 
       {/* Hero Section */}
       <section className="pt-32 pb-16 bg-gradient-to-br from-beige via-beige to-sage/20">
@@ -238,6 +245,11 @@ Most of our persistent cookies expire within 1 year.`,
       </section>
 
       <Footer />
+
+      <WaitlistModal
+        isOpen={isWaitlistOpen}
+        onClose={() => setIsWaitlistOpen(false)}
+      />
     </main>
   );
 }
