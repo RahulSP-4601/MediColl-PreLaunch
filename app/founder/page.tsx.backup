@@ -1,0 +1,470 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+
+interface Stats {
+  total_leads: number;
+  new_leads: number;
+  email_sent: number;
+  follow_up_sent: number;
+  waitlisted: number;
+  not_interested: number;
+  conversion_rate: number;
+}
+
+interface Lead {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  city: string;
+  type: string;
+  status: string;
+  source: string;
+  created_at: string;
+}
+
+type TabType = 'scraped' | 'waitlisted';
+
+export default function FounderDashboard() {
+  const [authenticated, setAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [scrapedLeads, setScrapedLeads] = useState<Lead[]>([]);
+  const [waitlistedLeads, setWaitlistedLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [activeTab, setActiveTab] = useState<TabType>('scraped');
+
+  useEffect(() => {
+    // Check if already authenticated in session
+    const isAuth = sessionStorage.getItem('founder_authenticated');
+    if (isAuth === 'true') {
+      setAuthenticated(true);
+      loadDashboardData();
+    }
+  }, []);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Simple password check (stored in env variable)
+    if (password === process.env.NEXT_PUBLIC_FOUNDER_PASSWORD || password === 'medicoll24founder2024') {
+      sessionStorage.setItem('founder_authenticated', 'true');
+      setAuthenticated(true);
+      setError('');
+      loadDashboardData();
+    } else {
+      setError('Invalid password');
+      setPassword('');
+    }
+  };
+
+  const loadDashboardData = async () => {
+    try {
+      // Load stats (disable cache to get fresh data)
+      console.log('🔍 Fetching stats...');
+      const statsRes = await fetch('/api/stats', { cache: 'no-store' });
+      const statsData = await statsRes.json();
+
+      if (statsData && !statsData.error) {
+        setStats(statsData);
+      }
+
+      // Load all leads (disable cache to get fresh data)
+      console.log('🔍 Fetching all leads...');
+      const leadsRes = await fetch('/api/founder/leads', { cache: 'no-store' });
+      const leadsData = await leadsRes.json();
+      const allLeads = leadsData.leads || [];
+
+      // Filter: Scraped leads = NOT waitlisted (only active scraping pipeline)
+      const scraped = allLeads.filter((lead: Lead) =>
+        lead.status !== 'waitlisted'
+      );
+      setScrapedLeads(scraped);
+
+      // Filter: Waitlisted leads = only waitlisted status
+      const waitlisted = allLeads.filter((lead: Lead) =>
+        lead.status === 'waitlisted'
+      );
+      setWaitlistedLeads(waitlisted);
+
+      console.log(`✅ Loaded: ${scraped.length} scraped, ${waitlisted.length} waitlisted`);
+    } catch (error) {
+      console.error('❌ Error loading dashboard data:', error);
+      setMessage('❌ Failed to load data. Check console for details.');
+    }
+  };
+
+  const handleScrapeOne = async () => {
+    setLoading(true);
+    setMessage('🔍 Scraping leads from JustDial (looking for ones with contact info)...');
+
+    try {
+      const res = await fetch('/api/scrape/manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          source: 'justdial',
+          city: 'Mumbai',
+          type: 'clinic',
+          limit: 10,  // Try to get 10 leads with contact info
+          enrichEmails: false,  // Skip email enrichment (slow)
+          findSocial: false,    // Skip social media search (slow)
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setMessage(`✅ Scraped ${data.scraped} lead! Saved: ${data.saved}, Duplicates: ${data.duplicates}`);
+        await loadDashboardData();
+      } else {
+        setMessage(`❌ Scraping failed: ${data.error}`);
+      }
+    } catch (error) {
+      setMessage(`❌ Error: ${error}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendEmail = async () => {
+    setLoading(true);
+    setMessage('📧 Sending initial email to new leads...');
+
+    try {
+      const res = await fetch('/api/campaign/manual', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          initialLimit: 10,  // Send to max 10 new leads
+          followupLimit: 0,  // No follow-up yet (manual testing)
+          markNotInterested: false,
+        }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        setMessage(`✅ Email sent! Initial: ${data.initialEmailsSent || 0}`);
+        await loadDashboardData();
+      } else {
+        setMessage(`❌ Email failed: ${data.error}`);
+      }
+    } catch (error) {
+      setMessage(`❌ Error: ${error}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    loadDashboardData();
+    setMessage('');
+  };
+
+  if (!authenticated) {
+    return (
+      <div className="min-h-screen bg-beige flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl p-8 w-full max-w-md shadow-2xl border border-beige-dark"
+        >
+          <h1 className="text-3xl font-bold text-darkgrey mb-6 text-center">
+            🔐 Founder Dashboard
+          </h1>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div>
+              <label className="block text-darkgrey/70 mb-2 text-sm font-medium">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg bg-beige-light border-2 border-beige-dark text-darkgrey placeholder-darkgrey/40 focus:outline-none focus:border-darkgrey transition"
+                placeholder="Enter founder password"
+                autoFocus
+              />
+            </div>
+            {error && (
+              <p className="text-red-600 text-sm font-medium">{error}</p>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-darkgrey text-beige py-3 rounded-lg font-semibold hover:bg-darkgrey-light transition"
+            >
+              Access Dashboard
+            </button>
+          </form>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-beige p-4 md:p-8">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-4xl font-bold text-darkgrey">
+              🚀 MediColl24 Sales Dashboard
+            </h1>
+            <button
+              onClick={() => {
+                sessionStorage.removeItem('founder_authenticated');
+                setAuthenticated(false);
+                setPassword('');
+                setStats(null);
+                setWaitlistedLeads([]);
+                setMessage('');
+              }}
+              className="px-4 py-2 bg-darkgrey/10 text-darkgrey rounded-lg hover:bg-darkgrey/20 transition font-medium"
+            >
+              Logout
+            </button>
+          </div>
+          <p className="text-darkgrey/60">Real-time sales pipeline & automation controls</p>
+        </motion.div>
+
+        {/* Action Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
+        >
+          <button
+            onClick={handleScrapeOne}
+            disabled={loading}
+            className="bg-green-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-700 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            🔍 Scrape Leads (Test)
+          </button>
+          <button
+            onClick={handleSendEmail}
+            disabled={loading}
+            className="bg-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-blue-700 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            📧 Send Email (Test)
+          </button>
+          <button
+            onClick={handleRefresh}
+            disabled={loading}
+            className="bg-orange-500 text-white py-4 px-6 rounded-xl font-semibold hover:bg-orange-600 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            🔄 Refresh Data
+          </button>
+        </motion.div>
+
+        {/* Message Display */}
+        {message && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className={`mb-6 p-4 rounded-lg font-medium ${
+              message.includes('✅')
+                ? 'bg-green-100 border-2 border-green-600 text-green-800'
+                : 'bg-red-100 border-2 border-red-600 text-red-800'
+            }`}
+          >
+            {message}
+          </motion.div>
+        )}
+
+        {/* Stats Grid */}
+        {stats && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
+          >
+            <StatCard title="Total Leads" value={stats.total_leads} icon="📊" />
+            <StatCard title="New" value={stats.new_leads} icon="🆕" />
+            <StatCard title="Email Sent" value={stats.email_sent} icon="📧" />
+            <StatCard title="Follow-up Sent" value={stats.follow_up_sent} icon="📬" />
+            <StatCard title="Waitlisted" value={stats.waitlisted} icon="✅" color="green" />
+            <StatCard title="Not Interested" value={stats.not_interested} icon="❌" />
+            <StatCard title="Conversion Rate" value={`${(stats.conversion_rate || 0).toFixed(1)}%`} icon="📈" color="blue" />
+            <StatCard title="Active Campaigns" value={stats.email_sent + stats.follow_up_sent} icon="🚀" />
+          </motion.div>
+        )}
+
+        {/* Tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white rounded-2xl shadow-xl border border-beige-dark overflow-hidden"
+        >
+          {/* Tab Headers */}
+          <div className="flex border-b border-beige-dark bg-beige-light/30">
+            <button
+              onClick={() => setActiveTab('scraped')}
+              className={`flex-1 px-6 py-4 font-semibold transition-all ${
+                activeTab === 'scraped'
+                  ? 'bg-white text-darkgrey border-b-4 border-darkgrey'
+                  : 'text-darkgrey/50 hover:text-darkgrey hover:bg-beige-light/50'
+              }`}
+            >
+              🔍 Scraped Leads ({scrapedLeads.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('waitlisted')}
+              className={`flex-1 px-6 py-4 font-semibold transition-all ${
+                activeTab === 'waitlisted'
+                  ? 'bg-white text-darkgrey border-b-4 border-green-600'
+                  : 'text-darkgrey/50 hover:text-darkgrey hover:bg-beige-light/50'
+              }`}
+            >
+              ✅ Waitlisted Leads ({waitlistedLeads.length})
+            </button>
+          </div>
+
+          {/* Tab Content */}
+          <div className="p-6">
+            {activeTab === 'scraped' && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <p className="text-sm text-darkgrey/60 mb-4">
+                  These are leads scraped from JustDial. Click "Send Email (Test)" to send initial email.
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left text-darkgrey/60 border-b-2 border-beige-dark">
+                        <th className="pb-3 px-4 font-semibold">Name</th>
+                        <th className="pb-3 px-4 font-semibold">Email</th>
+                        <th className="pb-3 px-4 font-semibold">Phone</th>
+                        <th className="pb-3 px-4 font-semibold">City</th>
+                        <th className="pb-3 px-4 font-semibold">Type</th>
+                        <th className="pb-3 px-4 font-semibold">Status</th>
+                        <th className="pb-3 px-4 font-semibold">Scraped</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {scrapedLeads.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="text-center text-darkgrey/40 py-8">
+                            No leads scraped yet. Click "Scrape 1 Lead (Test)" to start!
+                          </td>
+                        </tr>
+                      ) : (
+                        scrapedLeads.map((lead) => (
+                          <tr key={lead.id} className="border-b border-beige-dark hover:bg-beige-light">
+                            <td className="py-3 px-4 text-darkgrey font-medium">{lead.name}</td>
+                            <td className="py-3 px-4 text-darkgrey/80">{lead.email || '❌ No email'}</td>
+                            <td className="py-3 px-4 text-darkgrey/80">{lead.phone || '-'}</td>
+                            <td className="py-3 px-4 text-darkgrey/80">{lead.city}</td>
+                            <td className="py-3 px-4 text-darkgrey/80 capitalize">{lead.type}</td>
+                            <td className="py-3 px-4">
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                lead.status === 'new'
+                                  ? 'bg-blue-100 text-blue-700'
+                                  : lead.status === 'email_sent'
+                                  ? 'bg-green-100 text-green-700'
+                                  : lead.status === 'follow_up_sent'
+                                  ? 'bg-purple-100 text-purple-700'
+                                  : 'bg-gray-100 text-gray-700'
+                              }`}>
+                                {lead.status.replace('_', ' ')}
+                              </span>
+                            </td>
+                            <td className="py-3 px-4 text-darkgrey/60 text-sm">
+                              {new Date(lead.created_at).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'waitlisted' && (
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <p className="text-sm text-darkgrey/60 mb-4">
+                  These are leads who clicked "Join Waitlist" from your emails or landing page.
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="text-left text-darkgrey/60 border-b-2 border-beige-dark">
+                        <th className="pb-3 px-4 font-semibold">Name</th>
+                        <th className="pb-3 px-4 font-semibold">Email</th>
+                        <th className="pb-3 px-4 font-semibold">Phone</th>
+                        <th className="pb-3 px-4 font-semibold">City</th>
+                        <th className="pb-3 px-4 font-semibold">Joined</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {waitlistedLeads.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="text-center text-darkgrey/40 py-8">
+                            No waitlisted leads yet. Start your campaign to get sign-ups!
+                          </td>
+                        </tr>
+                      ) : (
+                        waitlistedLeads.map((lead) => (
+                          <tr key={lead.id} className="border-b border-beige-dark hover:bg-beige-light">
+                            <td className="py-3 px-4 text-darkgrey font-medium">{lead.name}</td>
+                            <td className="py-3 px-4 text-darkgrey/80">{lead.email}</td>
+                            <td className="py-3 px-4 text-darkgrey/80">{lead.phone || '-'}</td>
+                            <td className="py-3 px-4 text-darkgrey/80">{lead.city || '-'}</td>
+                            <td className="py-3 px-4 text-darkgrey/60">
+                              {new Date(lead.created_at).toLocaleDateString()}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </motion.div>
+            )}
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+function StatCard({
+  title,
+  value,
+  icon,
+  color = 'default'
+}: {
+  title: string;
+  value: string | number;
+  icon: string;
+  color?: 'default' | 'green' | 'blue';
+}) {
+  const colorMap = {
+    default: 'bg-white border-beige-dark',
+    green: 'bg-green-50 border-green-600',
+    blue: 'bg-blue-50 border-blue-600',
+  };
+
+  return (
+    <div className={`${colorMap[color]} rounded-xl p-6 border-2 shadow-lg`}>
+      <div className="text-3xl mb-2">{icon}</div>
+      <div className="text-3xl font-bold text-darkgrey mb-1">{value}</div>
+      <div className="text-darkgrey/60 text-sm font-medium">{title}</div>
+    </div>
+  );
+}

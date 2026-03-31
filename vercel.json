@@ -1,0 +1,12 @@
+{
+  "crons": [
+    {
+      "path": "/api/scrape/cron",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/campaign/run",
+      "schedule": "*/15 * * * *"
+    }
+  ]
+}
