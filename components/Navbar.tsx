@@ -21,13 +21,13 @@ export default function Navbar({ onJoinWaitlist }: NavbarProps) {
         <div className="flex items-center justify-between">
           {/* Logo Section */}
           <Link href="/" className="hover:opacity-80 transition-opacity">
-            <div className="h-8 md:h-9 relative w-auto flex items-center">
+            <div className="h-12 relative w-auto flex items-center">
               <Image
                 src="/logo.png"
                 alt="MediColl24"
-                width={100}
-                height={31}
-                className="h-full w-auto object-contain"
+                width={200}
+                height={62}
+                className="h-12 w-auto"
               />
             </div>
           </Link>
