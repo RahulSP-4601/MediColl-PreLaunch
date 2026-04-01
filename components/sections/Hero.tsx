@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Phone, Play } from "lucide-react";
+import { Phone } from "lucide-react";
 import Image from "next/image";
 
 interface HeroProps {
@@ -31,8 +31,8 @@ export default function Hero({ onJoinWaitlist }: HeroProps) {
               AI voice receptionist that answers every call, books appointments instantly, and works 24/7 — so you never lose a patient again.
             </p>
 
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+            {/* CTA Button */}
+            <div className="mb-12">
               <motion.button
                 onClick={onJoinWaitlist}
                 whileHover={{ scale: 1.02 }}
@@ -41,15 +41,6 @@ export default function Hero({ onJoinWaitlist }: HeroProps) {
               >
                 <Phone className="w-5 h-5" />
                 Join Waitlist
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 bg-transparent border-2 border-darkgrey/20 text-darkgrey rounded-xl font-semibold text-lg hover:border-darkgrey/40 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                <Play className="w-5 h-5" />
-                Watch Demo
               </motion.button>
             </div>
 
