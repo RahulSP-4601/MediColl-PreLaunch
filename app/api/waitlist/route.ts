@@ -39,7 +39,7 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, phone, clinicName, city } = body;
+    const { name, email, phone, country, state, clinicName, city } = body;
 
     if (!name || !email || !phone) {
       return NextResponse.json(
@@ -70,6 +70,8 @@ export async function POST(request: NextRequest) {
         name,
         email,
         phone,
+        country,
+        state,
         clinic_name: clinicName,
         city,
       })

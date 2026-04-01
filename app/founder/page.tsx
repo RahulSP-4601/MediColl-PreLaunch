@@ -8,10 +8,21 @@ interface WaitlistLead {
   name: string;
   email: string;
   phone?: string | null;
+  country?: string | null;
+  state?: string | null;
   city?: string | null;
   clinic_name?: string | null;
   created_at: string;
 }
+
+const COUNTRY_NAMES: Record<string, string> = {
+  IN: 'India',
+  US: 'USA',
+  AE: 'UAE',
+  GB: 'UK',
+  DE: 'Germany',
+  FR: 'France',
+};
 
 export default function FounderDashboard() {
   const [authenticated, setAuthenticated] = useState(false);
@@ -248,6 +259,8 @@ export default function FounderDashboard() {
                       <th className="pb-3 px-4 font-semibold">Name</th>
                       <th className="pb-3 px-4 font-semibold">Email</th>
                       <th className="pb-3 px-4 font-semibold">Phone</th>
+                      <th className="pb-3 px-4 font-semibold">Country</th>
+                      <th className="pb-3 px-4 font-semibold">State</th>
                       <th className="pb-3 px-4 font-semibold">City</th>
                       <th className="pb-3 px-4 font-semibold">Clinic Name</th>
                       <th className="pb-3 px-4 font-semibold">Signed Up</th>
@@ -281,6 +294,12 @@ export default function FounderDashboard() {
                           ) : (
                             <span className="text-darkgrey/30">-</span>
                           )}
+                        </td>
+                        <td className="py-4 px-4 text-darkgrey/60">
+                          {lead.country ? COUNTRY_NAMES[lead.country] || lead.country : <span className="text-darkgrey/30">-</span>}
+                        </td>
+                        <td className="py-4 px-4 text-darkgrey/60">
+                          {lead.state || <span className="text-darkgrey/30">-</span>}
                         </td>
                         <td className="py-4 px-4 text-darkgrey/60">
                           {lead.city || <span className="text-darkgrey/30">-</span>}

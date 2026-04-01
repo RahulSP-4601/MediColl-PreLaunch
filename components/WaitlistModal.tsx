@@ -7,16 +7,39 @@ interface WaitlistModalProps {
   onClose: () => void;
 }
 
+const COUNTRIES = [
+  { code: 'IN', name: 'India', phoneCode: '+91', placeholder: '+91 98765 43210' },
+  { code: 'US', name: 'United States', phoneCode: '+1', placeholder: '+1 234 567 8900' },
+  { code: 'AE', name: 'UAE', phoneCode: '+971', placeholder: '+971 50 123 4567' },
+  { code: 'GB', name: 'United Kingdom', phoneCode: '+44', placeholder: '+44 20 1234 5678' },
+  { code: 'DE', name: 'Germany', phoneCode: '+49', placeholder: '+49 30 12345678' },
+  { code: 'FR', name: 'France', phoneCode: '+33', placeholder: '+33 1 23 45 67 89' },
+];
+
+const STATES: Record<string, string[]> = {
+  IN: ['Andhra Pradesh', 'Delhi', 'Gujarat', 'Karnataka', 'Maharashtra', 'Tamil Nadu', 'Telangana', 'Uttar Pradesh', 'West Bengal', 'Other'],
+  US: ['California', 'Florida', 'New York', 'Texas', 'Illinois', 'Pennsylvania', 'Ohio', 'Georgia', 'North Carolina', 'Other'],
+  AE: ['Abu Dhabi', 'Dubai', 'Sharjah', 'Ajman', 'Fujairah', 'Ras Al Khaimah', 'Umm Al Quwain'],
+  GB: ['England', 'Scotland', 'Wales', 'Northern Ireland'],
+  DE: ['Bavaria', 'Berlin', 'Hamburg', 'Hesse', 'North Rhine-Westphalia', 'Saxony', 'Other'],
+  FR: ['Île-de-France', 'Provence-Alpes-Côte d\'Azur', 'Auvergne-Rhône-Alpes', 'Nouvelle-Aquitaine', 'Occitanie', 'Other'],
+};
+
 export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
+    country: '',
+    state: '',
     clinicName: '',
     city: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const selectedCountry = COUNTRIES.find(c => c.code === formData.country);
+  const availableStates = formData.country ? STATES[formData.country] || [] : [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,6 +62,8 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
             name: '',
             email: '',
             phone: '',
+            country: '',
+            state: '',
             clinicName: '',
             city: '',
           });
@@ -107,38 +132,6 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-darkgrey mb-2">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
-                    placeholder="your@email.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-darkgrey mb-2">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    value={formData.phone}
-                    onChange={(e) =>
-                      setFormData({ ...formData, phone: e.target.value })
-                    }
-                    className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
-                    placeholder="+91 98765 43210"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-darkgrey mb-2">
                     Clinic/Hospital Name *
                   </label>
                   <input
@@ -155,6 +148,50 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-darkgrey mb-2">
+                    Country *
+                  </label>
+                  <select
+                    required
+                    value={formData.country}
+                    onChange={(e) =>
+                      setFormData({ ...formData, country: e.target.value, state: '', city: '' })
+                    }
+                    className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey focus:outline-none focus:border-darkgrey/40 transition-colors"
+                  >
+                    <option value="">Select Country</option>
+                    {COUNTRIES.map((country) => (
+                      <option key={country.code} value={country.code}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {formData.country && availableStates.length > 0 && (
+                  <div>
+                    <label className="block text-sm font-medium text-darkgrey mb-2">
+                      State/Region *
+                    </label>
+                    <select
+                      required
+                      value={formData.state}
+                      onChange={(e) =>
+                        setFormData({ ...formData, state: e.target.value, city: '' })
+                      }
+                      className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey focus:outline-none focus:border-darkgrey/40 transition-colors"
+                    >
+                      <option value="">Select State/Region</option>
+                      {availableStates.map((state) => (
+                        <option key={state} value={state}>
+                          {state}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-sm font-medium text-darkgrey mb-2">
                     City *
                   </label>
                   <input
@@ -166,6 +203,38 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
                     }
                     className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
                     placeholder="Mumbai"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-darkgrey mb-2">
+                    Phone Number *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
+                    placeholder={selectedCountry?.placeholder || '+91 98765 43210'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-darkgrey mb-2">
+                    Email *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className="w-full px-4 py-3 bg-darkgrey/5 border border-darkgrey/20 rounded-xl text-darkgrey placeholder-darkgrey/50 focus:outline-none focus:border-darkgrey/40 transition-colors"
+                    placeholder="your@email.com"
                   />
                 </div>
 
