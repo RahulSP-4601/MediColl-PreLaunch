@@ -22,8 +22,8 @@ export default function Hero({ onJoinWaitlist }: HeroProps) {
           >
             {/* Headline */}
             <h1 className="text-6xl md:text-7xl font-bold text-darkgrey mb-6 leading-[1.1] tracking-tight">
-              Capture 30%
-              <span className="block mt-2">More Patients Automatically</span>
+              AI Receptionist for
+              <span className="block mt-2">Hospitals & Clinics</span>
             </h1>
 
             {/* Subtext */}

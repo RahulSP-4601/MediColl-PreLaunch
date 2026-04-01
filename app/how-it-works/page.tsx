@@ -16,7 +16,19 @@ export default function HowItWorksPage() {
   return (
     <main className="min-h-screen">
       <Navbar onJoinWaitlist={handleJoinWaitlist} />
-      <div className="pt-24">
+      <div className="pt-32 pb-8 bg-gradient-to-br from-beige via-beige to-sage/20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-5xl md:text-6xl font-bold text-darkgrey mb-6">
+              How AI Receptionist Works for Healthcare
+            </h1>
+            <p className="text-xl text-darkgrey/70 leading-relaxed">
+              Simple 3-step process: MediColl24 answers patient calls, books appointments, and syncs with your calendar in under 45 seconds.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div>
         <HowItWorks />
       </div>
       <Footer />

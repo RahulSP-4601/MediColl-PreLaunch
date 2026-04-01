@@ -71,10 +71,10 @@ export default function ContactPage() {
             className="max-w-3xl mx-auto text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-darkgrey mb-6">
-              Get in Touch
+              Contact MediColl24 - AI Receptionist Solutions
             </h1>
             <p className="text-xl text-darkgrey/70 leading-relaxed">
-              Have questions? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
+              Have questions about AI receptionist for your hospital or clinic? We&apos;d love to hear from you. Contact us in Mumbai at rahul@medicoll.com or +91 86557 12707.
             </p>
           </motion.div>
         </div>

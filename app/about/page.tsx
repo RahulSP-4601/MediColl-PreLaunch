@@ -50,11 +50,11 @@ export default function AboutPage() {
             className="max-w-3xl mx-auto text-center"
           >
             <h1 className="text-5xl md:text-6xl font-bold text-darkgrey mb-6">
-              About MediColl24
+              About MediColl24 - AI Receptionist for Healthcare
             </h1>
             <p className="text-xl text-darkgrey/70 leading-relaxed">
               We&apos;re on a mission to transform healthcare communication with intelligent AI voice agents
-              that ensure no patient call ever goes unanswered.
+              that ensure no patient call ever goes unanswered. Based in Mumbai, India.
             </p>
           </motion.div>
         </div>

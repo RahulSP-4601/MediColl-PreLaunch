@@ -93,22 +93,6 @@ export default function Features() {
   return (
     <section id="features" className="py-24 bg-beige">
       <div className="container mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-4xl md:text-5xl font-bold text-darkgrey mb-6">
-            Everything Your Hospital
-            <span className="block mt-2">Needs to Thrive</span>
-          </h2>
-          <p className="text-xl text-darkgrey/70 max-w-3xl mx-auto">
-            MediColl24 is built specifically for hospitals and clinics with powerful features to enhance patient care and streamline operations
-          </p>
-        </motion.div>
-
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
             <FeatureCard key={index} {...feature} index={index} />
