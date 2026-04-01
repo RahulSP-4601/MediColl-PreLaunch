@@ -128,7 +128,7 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-beige p-6 rounded-2xl text-center hover:shadow-lg transition-all group"
+                className="bg-white p-6 rounded-2xl text-center hover:shadow-xl transition-all group border border-darkgrey/10"
               >
                 <div className="w-12 h-12 bg-sage/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-sage/30 transition-colors">
                   <item.icon className="w-6 h-6 text-sage" />
