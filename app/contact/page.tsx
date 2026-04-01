@@ -117,7 +117,7 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Info Cards */}
-      <section className="py-16 bg-beige">
+      <section className="py-16 bg-darkgrey">
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {contactInfo.map((item, index) => (
@@ -128,13 +128,13 @@ export default function ContactPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-white p-6 rounded-2xl text-center hover:shadow-xl transition-all group border border-darkgrey/10"
+                className="bg-beige/10 backdrop-blur-sm p-6 rounded-2xl text-center hover:bg-beige/20 transition-all group border border-beige/20"
               >
-                <div className="w-12 h-12 bg-sage/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-sage/30 transition-colors">
-                  <item.icon className="w-6 h-6 text-sage" />
+                <div className="w-12 h-12 bg-beige/20 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-beige/30 transition-colors">
+                  <item.icon className="w-6 h-6 text-beige" />
                 </div>
-                <h3 className="font-semibold text-darkgrey mb-2">{item.title}</h3>
-                <p className="text-darkgrey/70">{item.value}</p>
+                <h3 className="font-semibold text-beige mb-2">{item.title}</h3>
+                <p className="text-beige/80">{item.value}</p>
               </motion.a>
             ))}
           </div>
