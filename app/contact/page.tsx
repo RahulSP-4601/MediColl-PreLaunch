@@ -76,8 +76,8 @@ export default function ContactPage() {
     {
       icon: Mail,
       title: "Email",
-      value: "rahul@medicoll.com",
-      href: "mailto:rahul@medicoll.com",
+      value: "rahul@medicoll24.com",
+      href: "mailto:rahul@medicoll24.com",
     },
     {
       icon: Phone,
@@ -110,7 +110,7 @@ export default function ContactPage() {
               Contact MediColl24 - AI Receptionist Solutions
             </h1>
             <p className="text-xl text-darkgrey/70 leading-relaxed">
-              Have questions about AI receptionist for your hospital or clinic? We&apos;d love to hear from you. Contact us in Mumbai at rahul@medicoll.com or +91 86557 12707.
+              Have questions about AI receptionist for your hospital or clinic? We&apos;d love to hear from you. Contact us in Mumbai at rahul@medicoll24.com or +91 86557 12707.
             </p>
           </motion.div>
         </div>

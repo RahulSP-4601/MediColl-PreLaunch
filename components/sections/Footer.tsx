@@ -52,8 +52,8 @@ export default function Footer() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-darkgrey/70">
                   <Mail className="w-5 h-5" />
-                  <a href="mailto:rahul@medicoll.com" className="hover:text-darkgrey transition-colors">
-                    rahul@medicoll.com
+                  <a href="mailto:rahul@medicoll24.com" className="hover:text-darkgrey transition-colors">
+                    rahul@medicoll24.com
                   </a>
                 </div>
                 <div className="flex items-center gap-3 text-darkgrey/70">

@@ -90,7 +90,7 @@ export default function RootLayout({
       '@type': 'ContactPoint',
       telephone: '+91-86557-12707',
       contactType: 'Customer Service',
-      email: 'rahul@medicoll.com',
+      email: 'rahul@medicoll24.com',
       areaServed: 'IN',
       availableLanguage: ['English', 'Hindi'],
     },

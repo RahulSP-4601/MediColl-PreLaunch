@@ -214,7 +214,7 @@ Most of our persistent cookies expire within 1 year.`,
                 If you have questions about our use of cookies, please contact us at:
               </p>
               <div className="space-y-2 text-darkgrey/70">
-                <p>Email: rahul@medicoll.com</p>
+                <p>Email: rahul@medicoll24.com</p>
                 <p>Phone: +91 86557 12707</p>
               </div>
             </motion.div>

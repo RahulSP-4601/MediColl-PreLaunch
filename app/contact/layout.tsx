@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Contact Us | MediColl24',
-  description: 'Contact MediColl24 for AI receptionist solutions for your hospital or clinic in Mumbai. Email: rahul@medicoll.com | Phone: +91 86557 12707',
+  description: 'Contact MediColl24 for AI receptionist solutions for your hospital or clinic in Mumbai. Email: rahul@medicoll24.com | Phone: +91 86557 12707',
   keywords: [
     'contact MediColl24',
     'AI receptionist support',

@@ -119,7 +119,7 @@ export default function TermsPage() {
       title: "14. Contact Information",
       content: `For questions about these Terms of Service, contact us at:
 
-Email: rahul@medicoll.com
+Email: rahul@medicoll24.com
 Phone: +91 86557 12707
 Address: Mumbai, India`,
     },

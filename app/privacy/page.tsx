@@ -169,7 +169,7 @@ Healthcare-related data is retained according to applicable regulations.`,
                   If you have questions about this Privacy Policy or our data practices, please contact us at:
                 </p>
                 <div className="space-y-2 text-darkgrey/70">
-                  <p>Email: rahul@medicoll.com</p>
+                  <p>Email: rahul@medicoll24.com</p>
                   <p>Phone: +91 86557 12707</p>
                   <p>Address: Mumbai, India</p>
                 </div>
