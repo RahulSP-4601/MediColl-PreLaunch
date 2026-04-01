@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://medicoll24.com/sitemap.xml
+Sitemap: https://www.medicoll24.com/sitemap.xml
