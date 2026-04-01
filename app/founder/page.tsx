@@ -33,6 +33,11 @@ export default function FounderDashboard() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Filter states
+  const [filterCountry, setFilterCountry] = useState('');
+  const [filterState, setFilterState] = useState('');
+  const [filterCity, setFilterCity] = useState('');
+
   useEffect(() => {
     const isAuth = sessionStorage.getItem('founder_authenticated');
     if (isAuth === 'true') {
@@ -40,6 +45,11 @@ export default function FounderDashboard() {
       loadWaitlistData();
     }
   }, []);
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [filterCountry, filterState, filterCity]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,11 +87,26 @@ export default function FounderDashboard() {
     }
   };
 
-  // Pagination calculations
-  const totalPages = Math.ceil(waitlistLeads.length / itemsPerPage);
+  // Filter leads based on country, state, city
+  const filteredLeads = waitlistLeads.filter((lead) => {
+    const countryMatch = !filterCountry ||
+      (lead.country && COUNTRY_NAMES[lead.country]?.toLowerCase().includes(filterCountry.toLowerCase())) ||
+      (lead.country?.toLowerCase().includes(filterCountry.toLowerCase()));
+
+    const stateMatch = !filterState ||
+      (lead.state?.toLowerCase().includes(filterState.toLowerCase()));
+
+    const cityMatch = !filterCity ||
+      (lead.city?.toLowerCase().includes(filterCity.toLowerCase()));
+
+    return countryMatch && stateMatch && cityMatch;
+  });
+
+  // Pagination calculations (applied after filtering)
+  const totalPages = Math.ceil(filteredLeads.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentLeads = waitlistLeads.slice(startIndex, endIndex);
+  const currentLeads = filteredLeads.slice(startIndex, endIndex);
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
@@ -228,15 +253,76 @@ export default function FounderDashboard() {
           <div className="p-6 border-b border-beige-dark bg-green-50">
             <h2 className="text-2xl font-bold text-darkgrey">
               ✅ Waitlist Signups ({waitlistLeads.length})
+              {filteredLeads.length < waitlistLeads.length && (
+                <span className="text-base font-normal text-darkgrey/60 ml-2">
+                  · Filtered: {filteredLeads.length}
+                </span>
+              )}
               {totalPages > 1 && (
                 <span className="text-base font-normal text-darkgrey/60 ml-2">
-                  · Showing {startIndex + 1}-{Math.min(endIndex, waitlistLeads.length)}
+                  · Showing {startIndex + 1}-{Math.min(endIndex, filteredLeads.length)}
                 </span>
               )}
             </h2>
             <p className="text-sm text-darkgrey/60 mt-1">
               People who filled out the waitlist form on your website
             </p>
+          </div>
+
+          {/* Filter Section */}
+          <div className="p-6 border-b border-beige-dark bg-beige/30">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-darkgrey mb-2">
+                  Filter by Country
+                </label>
+                <input
+                  type="text"
+                  value={filterCountry}
+                  onChange={(e) => setFilterCountry(e.target.value)}
+                  placeholder="e.g., India, USA"
+                  className="w-full px-4 py-2 bg-white border border-darkgrey/20 rounded-lg text-darkgrey placeholder-darkgrey/40 focus:outline-none focus:border-darkgrey/40 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-darkgrey mb-2">
+                  Filter by State
+                </label>
+                <input
+                  type="text"
+                  value={filterState}
+                  onChange={(e) => setFilterState(e.target.value)}
+                  placeholder="e.g., Maharashtra"
+                  className="w-full px-4 py-2 bg-white border border-darkgrey/20 rounded-lg text-darkgrey placeholder-darkgrey/40 focus:outline-none focus:border-darkgrey/40 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-darkgrey mb-2">
+                  Filter by City
+                </label>
+                <input
+                  type="text"
+                  value={filterCity}
+                  onChange={(e) => setFilterCity(e.target.value)}
+                  placeholder="e.g., Mumbai"
+                  className="w-full px-4 py-2 bg-white border border-darkgrey/20 rounded-lg text-darkgrey placeholder-darkgrey/40 focus:outline-none focus:border-darkgrey/40 transition-colors"
+                />
+              </div>
+            </div>
+            {(filterCountry || filterState || filterCity) && (
+              <div className="mt-4">
+                <button
+                  onClick={() => {
+                    setFilterCountry('');
+                    setFilterState('');
+                    setFilterCity('');
+                  }}
+                  className="text-sm text-orange-600 hover:text-orange-700 font-medium"
+                >
+                  ✕ Clear all filters
+                </button>
+              </div>
+            )}
           </div>
 
           <div className="p-6">
@@ -250,6 +336,22 @@ export default function FounderDashboard() {
                     https://medicoll24.com
                   </span>
                 </p>
+              </div>
+            ) : filteredLeads.length === 0 ? (
+              <div className="text-center py-12">
+                <p className="text-darkgrey/40 text-lg">
+                  No results found for the current filters
+                </p>
+                <button
+                  onClick={() => {
+                    setFilterCountry('');
+                    setFilterState('');
+                    setFilterCity('');
+                  }}
+                  className="mt-4 text-orange-600 hover:text-orange-700 font-medium"
+                >
+                  Clear filters
+                </button>
               </div>
             ) : (
               <div className="overflow-x-auto">
