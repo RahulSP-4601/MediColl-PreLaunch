@@ -19,6 +19,8 @@ export default function FounderDashboard() {
   const [error, setError] = useState('');
   const [waitlistLeads, setWaitlistLeads] = useState<WaitlistLead[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const isAuth = sessionStorage.getItem('founder_authenticated');
@@ -50,13 +52,40 @@ export default function FounderDashboard() {
       const data = await res.json();
 
       if (data.success) {
-        setWaitlistLeads(data.leads || []);
+        // Sort by created_at DESC (newest first)
+        const sortedLeads = (data.leads || []).sort((a: WaitlistLead, b: WaitlistLead) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+        setWaitlistLeads(sortedLeads);
+        setCurrentPage(1); // Reset to first page on data load
       }
     } catch (error) {
       console.error('Error loading waitlist:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  // Pagination calculations
+  const totalPages = Math.ceil(waitlistLeads.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentLeads = waitlistLeads.slice(startIndex, endIndex);
+
+  const goToNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goToPage = (page: number) => {
+    setCurrentPage(page);
   };
 
   const handleRefresh = async () => {
@@ -188,6 +217,11 @@ export default function FounderDashboard() {
           <div className="p-6 border-b border-beige-dark bg-green-50">
             <h2 className="text-2xl font-bold text-darkgrey">
               ✅ Waitlist Signups ({waitlistLeads.length})
+              {totalPages > 1 && (
+                <span className="text-base font-normal text-darkgrey/60 ml-2">
+                  · Showing {startIndex + 1}-{Math.min(endIndex, waitlistLeads.length)}
+                </span>
+              )}
             </h2>
             <p className="text-sm text-darkgrey/60 mt-1">
               People who filled out the waitlist form on your website
@@ -220,7 +254,7 @@ export default function FounderDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {waitlistLeads.map((lead, index) => (
+                    {currentLeads.map((lead, index) => (
                       <motion.tr
                         key={lead.id}
                         initial={{ opacity: 0, y: 20 }}
@@ -261,6 +295,43 @@ export default function FounderDashboard() {
                     ))}
                   </tbody>
                 </table>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between mt-6 pt-6 border-t border-beige-dark">
+                    <button
+                      onClick={goToPreviousPage}
+                      disabled={currentPage === 1}
+                      className="px-4 py-2 bg-darkgrey text-white rounded-lg font-medium hover:bg-darkgrey/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      ← Previous
+                    </button>
+
+                    <div className="flex items-center gap-2">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <button
+                          key={page}
+                          onClick={() => goToPage(page)}
+                          className={`w-10 h-10 rounded-lg font-medium transition ${
+                            currentPage === page
+                              ? 'bg-darkgrey text-white'
+                              : 'bg-beige-light text-darkgrey hover:bg-beige-dark'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      ))}
+                    </div>
+
+                    <button
+                      onClick={goToNextPage}
+                      disabled={currentPage === totalPages}
+                      className="px-4 py-2 bg-darkgrey text-white rounded-lg font-medium hover:bg-darkgrey/90 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>
