@@ -139,10 +139,11 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-darkgrey mb-2">
-                    Clinic/Hospital Name
+                    Clinic/Hospital Name *
                   </label>
                   <input
                     type="text"
+                    required
                     value={formData.clinicName}
                     onChange={(e) =>
                       setFormData({ ...formData, clinicName: e.target.value })
@@ -154,10 +155,11 @@ export function WaitlistModal({ isOpen, onClose }: WaitlistModalProps) {
 
                 <div>
                   <label className="block text-sm font-medium text-darkgrey mb-2">
-                    City
+                    City *
                   </label>
                   <input
                     type="text"
+                    required
                     value={formData.city}
                     onChange={(e) =>
                       setFormData({ ...formData, city: e.target.value })
